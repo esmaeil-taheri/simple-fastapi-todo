@@ -1,17 +1,19 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 
+from datetime import timedelta, datetime, timezone
 from starlette import status
 from pydantic import BaseModel, Field
 from passlib.context import CryptContext
-from database import SessionLocal
-from typing import Annotated
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
-from datetime import timedelta, datetime, timezone
+from typing import Annotated
+
+from database import SessionLocal
+from models import Users
+
 import os
 
-from models import Users
 
 router = APIRouter(
     prefix='/auth',
@@ -56,6 +58,7 @@ def get_db():
 
 
 db_dependency = Annotated[Session, Depends(get_db)]
+
 
 def authenticate_user(username: str, password: str, db):
     user = db.query(Users).filter(Users.username == username).first()

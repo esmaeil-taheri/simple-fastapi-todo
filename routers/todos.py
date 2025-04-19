@@ -1,11 +1,14 @@
 from fastapi import Depends, Path, HTTPException, APIRouter
+
 from typing import Annotated
 from database import SessionLocal
 from sqlalchemy.orm import Session 
-from models import Todos
 from pydantic import BaseModel, Field
 from starlette import status
+
+from models import Todos
 from .auth import get_current_user
+
 
 router = APIRouter(
     prefix='/todos',
@@ -76,5 +79,4 @@ async def delete_todo(user: user_dependency, db: db_dependency, todo_id: int = P
         raise HTTPException(status_code=404, detail='Todo Not Found.')
 
     db.query(Todos).filter(Todos.id == todo_id).filter(Todos.user == user.get('id')).delete()
-    # db.delete(todo)
     db.commit()
