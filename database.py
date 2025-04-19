@@ -2,21 +2,23 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
+from dotenv import load_dotenv
+import os
 
-# SQLACLHEMY_DATABASE_URL =  'postgresql://postgres:esi12345@localhost:5432/store'
+load_dotenv()
 
-SQLACLHEMY_DATABASE_URL = 'sqlite:///./app.db'
+# Sqlite
+# SQLACLHEMY_DATABASE_URL = 'sqlite:///./app.db'
+# engine = create_engine(SQLACLHEMY_DATABASE_URL, connect_args={'check_same_thread': False}, echo=True)
 
 
-engine = create_engine(SQLACLHEMY_DATABASE_URL, connect_args={'check_same_thread': False}, echo=True)
+SQLACLHEMY_DATABASE_URL =  os.environ.get("DB_URL")
+
+
+engine = create_engine(SQLACLHEMY_DATABASE_URL)
 
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 Base = declarative_base()
-
-
-# insert into todos (title, description, priority, complete) values ('go home', 'sleep', 1, False)
-
-# .mode table

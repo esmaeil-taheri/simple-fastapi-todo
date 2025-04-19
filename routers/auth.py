@@ -96,7 +96,8 @@ async def register_user(db: db_dependency, register: UserRegisteration):
         first_name = register.first_name,
         last_name = register.last_name,
         password = bcrypt_context.hash(register.password),
-        role = 'user'
+        role = 'user',
+        is_active = True,
     )
 
     db.add(create_user)
@@ -112,7 +113,6 @@ async def login_user(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could Not Validate User.')
     token = create_access_token(user.username, user.id, user.role, timedelta(minutes=60))
     return {'access_token': token, 'token_type': 'bearer'}
-
 
 
 @router.get('/user', status_code=status.HTTP_200_OK)
