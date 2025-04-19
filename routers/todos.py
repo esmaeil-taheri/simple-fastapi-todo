@@ -32,12 +32,12 @@ class TodoRequest(BaseModel):
     complete: bool
 
 
-@router.get('/', status_code=status.HTTP_200_OK, tags=['Todos'])
+@router.get('/', status_code=status.HTTP_200_OK)
 async def todos_list(user: user_dependency, db: db_dependency):
     return db.query(Todos).filter(Todos.user == user.get('id')).all()
 
 
-@router.get('/todo/{todo_id}', status_code=status.HTTP_200_OK, tags=['Todos'])
+@router.get('/todo/{todo_id}', status_code=status.HTTP_200_OK)
 async def todo_detail(user: user_dependency, db: db_dependency, todo_id: int = Path(gt=0)):
     todo = db.query(Todos).filter(Todos.id == todo_id).filter(Todos.user == user.get('id')).first()
     if todo is not None:
@@ -45,7 +45,7 @@ async def todo_detail(user: user_dependency, db: db_dependency, todo_id: int = P
     raise HTTPException(status_code=404, detail='Todo Not Found.')
 
 
-@router.post('/', status_code=status.HTTP_201_CREATED, tags=['Todos'])
+@router.post('/', status_code=status.HTTP_201_CREATED)
 async def create_todo(user: user_dependency, db: db_dependency, todo_request: TodoRequest):
     todo = Todos(**todo_request.model_dump(), user=user.get('id'))
     db.add(todo)
@@ -53,7 +53,7 @@ async def create_todo(user: user_dependency, db: db_dependency, todo_request: To
     return todo_request
 
 
-@router.put('/{todo_id}', status_code=status.HTTP_200_OK, tags=['Todos'])
+@router.put('/{todo_id}', status_code=status.HTTP_200_OK)
 async def update_todo(user: user_dependency, db: db_dependency, todo_request: TodoRequest, todo_id: int = Path(gt=0)):
     todo = db.query(Todos).filter(Todos.id == todo_id).filter(Todos.user == user.get('id')).first()
     if todo is None:
@@ -69,7 +69,7 @@ async def update_todo(user: user_dependency, db: db_dependency, todo_request: To
     return todo_request
 
 
-@router.delete('/{todo_id}', status_code=status.HTTP_204_NO_CONTENT, tags=['Todos'])
+@router.delete('/{todo_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def delete_todo(user: user_dependency, db: db_dependency, todo_id: int = Path(gt=0)):
     todo = db.query(Todos).filter(Todos.id == todo_id).filter(Todos.user == user.get('id')).first()
     if todo is None:
