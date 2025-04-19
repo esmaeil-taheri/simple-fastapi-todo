@@ -9,6 +9,7 @@ from typing import Annotated
 from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 from datetime import timedelta, datetime, timezone
+import os
 
 from models import Users
 
@@ -18,8 +19,9 @@ router = APIRouter(
 )
 
 
-SECRET_KEY = 'wfio23efhpoas8dfy23'
-ALGORITHM = 'HS256'
+SECRET_KEY = os.environ.get("OAUTH2_SECRET_KEY")
+ALGORITHM = os.environ.get("OAUTH2_ALGORITHM")
+TOKEN_LIFETIME = os.environ.get("OAUTH2_ACCESS_TOKEN_EXPIRE_MINUTES")
 
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
@@ -111,7 +113,7 @@ async def login_user(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     user = authenticate_user(form_data.username, form_data.password, db)
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could Not Validate User.')
-    token = create_access_token(user.username, user.id, user.role, timedelta(minutes=60))
+    token = create_access_token(user.username, user.id, user.role, timedelta(minutes=int(TOKEN_LIFETIME)))
     return {'access_token': token, 'token_type': 'bearer'}
 
 
