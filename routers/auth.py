@@ -114,6 +114,7 @@ async def login_user(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could Not Validate User.')
     token = create_access_token(user.username, user.id, user.role, timedelta(minutes=int(TOKEN_LIFETIME)))
+
     return {'access_token': token, 'token_type': 'bearer'}
 
 
