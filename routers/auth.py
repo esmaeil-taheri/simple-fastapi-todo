@@ -36,12 +36,17 @@ class UserRegisteration(BaseModel):
     password: str = Field(min_length=8, max_length=16)
     first_name: str = Field(min_length=3, max_length=15)
     last_name: str = Field(min_length=3, max_length=15)
+    phone_number: str = Field(min_length=11, max_length=11)
 
 
 class PasswordChange(BaseModel):
     current_password: str = Field(min_length=8, max_length=16)
     new_password: str = Field(min_length=8, max_length=16)
     new_password_confirm: str = Field(min_length=8, max_length=16)
+
+
+class PhoneNumberChange(BaseModel):
+    phone_number: str = Field(min_length=11, max_length=11)
 
 
 class Token(BaseModel):
@@ -101,6 +106,7 @@ async def register_user(db: db_dependency, register: UserRegisteration):
         first_name = register.first_name,
         last_name = register.last_name,
         password = bcrypt_context.hash(register.password),
+        phone_number = register.phone_number,
         role = 'user',
         is_active = True,
     )
@@ -124,7 +130,7 @@ async def login_user(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 @router.get('/user', status_code=status.HTTP_200_OK)
 async def user_detail(user: user_dependency, db: db_dependency):
     user = db.query(Users).filter(Users.id == user.get('id')).first()
-    return {'username': user.username, 'email': user.email, 'first_name': user.first_name, 'last_name': user.last_name}
+    return {'username': user.username, 'phone_number': user.phone_number, 'email': user.email, 'first_name': user.first_name, 'last_name': user.last_name}
 
 
 @router.post('/password/change', status_code=status.HTTP_200_OK)
@@ -143,3 +149,15 @@ async def change_password(user: user_dependency, db: db_dependency, change: Pass
     db.refresh(user)
 
     return {"detail": "Password changed successfully."}
+
+
+@router.put('/phone_number/change', status_code=status.HTTP_200_OK)
+async def change_phone(user: user_dependency, db: db_dependency, phone: PhoneNumberChange):
+    user = db.query(Users).filter(Users.id == user.get('id')).first()
+    
+    user.phone_number = phone.phone_number
+
+    db.commit()
+    db.refresh(user)
+
+    return {"detail": "Phone number changed successfully."}

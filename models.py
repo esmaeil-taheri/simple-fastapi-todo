@@ -12,7 +12,8 @@ class Users(Base):
     first_name = Column(String)  
     last_name = Column(String)
     is_active = Column(Boolean)
-    role = Column(String)   
+    role = Column(String)
+    phone_number = Column(String)   
 
 
 class Todos(Base):

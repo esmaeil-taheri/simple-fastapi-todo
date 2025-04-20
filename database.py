@@ -12,7 +12,7 @@ load_dotenv()
 # engine = create_engine(SQLACLHEMY_DATABASE_URL, connect_args={'check_same_thread': False}, echo=True)
 
 
-SQLACLHEMY_DATABASE_URL =  os.environ.get("DB_URL")
+SQLACLHEMY_DATABASE_URL =  os.environ.get("DATABASE_URL")
 
 
 engine = create_engine(SQLACLHEMY_DATABASE_URL)
