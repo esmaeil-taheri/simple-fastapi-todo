@@ -9,8 +9,8 @@ from sqlalchemy.orm import Session
 from jose import jwt, JWTError
 from typing import Annotated
 
-from database import SessionLocal
-from models import Users
+from src.database import SessionLocal
+from src.models import Users
 
 import os
 

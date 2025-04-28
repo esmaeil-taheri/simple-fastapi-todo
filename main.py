@@ -1,11 +1,11 @@
 from fastapi import FastAPI
-from database import Base, engine
+from src.database import Base, engine
 
-from routers import auth
-from routers import todos
-from routers import admin
+from src.routers import auth
+from src.routers import todos
+from src.routers import admin
 
-import models
+from .models import Base
 
 app = FastAPI()
 
